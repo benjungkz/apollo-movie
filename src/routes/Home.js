@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Movie from '../components/Movie';
 
 const GET_MOVIES = gql`{
-	movies(limit:10, rating: 9.4){
+	movies(limit:10, rating: 9.8){
     id,
   	medium_cover_image
   }

@@ -7,29 +7,45 @@ import { useQuery } from '@apollo/react-hooks';
 const GET_MOVIE = gql`
    query getMovie($id: Int!){
     movie(id:$id){
-        id
         title
+        medium_cover_image
+        language
+        rating
         description_intro
+    }
+    suggestions(id:$id){
+        id
         medium_cover_image
     }
    }
 `;
 
 export default () => {
-    let { id } = useParams();
-    id = parseInt(id);
-
-    console.log(typeof id, id);
-
-    const { loading, data, error } = useQuery( GET_MOVIE, {
-        variables: { id }
-    });
-
-    if (loading) {
-        return "loading";
-    }
     
-    if (data && data.movie) {
-        return data.movie.title;
-    }
+    // Get Param 
+    const { id } = useParams();
+    
+    // Hook
+    const { loading, data } = useQuery( GET_MOVIE, {
+        variables: { id: parseInt(id) }
+    });
+    console.log(data?.movie?.title);
+    console.log(data?.suggestions);
+
+    // Render
+    return (
+        <section>
+            <div>
+                <h1>{ loading ? "Loading..." : data?.movie?.title }</h1> 
+                <h4>{ data?.movie?.language } / { data?.movie?.rating } </h4>
+                <p>{ data?.movie?.description_intro }</p>
+            </div>
+            <img src={data && data.movie ? data.movie.medium_cover_image : ""} alt=""/>
+            <div>
+               {data?.suggestions.map(s_movie => (
+                    <img src={s_movie.medium_cover_image} alt=""/>
+                ))} 
+            </div>
+        </section>
+    );
 };
